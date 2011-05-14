@@ -1,0 +1,27 @@
+Requirements:
+
+        zeromq-2.1.7
+        redis-2.2.7
+
+Design:
+
+        1) Master handles all metadata
+        2) Workers are dumb trusting writes from clients
+        3) Clients do RPC with master and workers directly
+        4) Metadata comes from master, flows via client to workers
+        5) Assume write once, read many in future; no append; no seek
+        6) Client allowed to arbitrarily chunk (client knows best!)
+        7) No replication right now; client would get list from master
+        8) No multi-reading or multi-writing...
+        9) All workers store chunks in the same path on their system
+        10) Dumb round-robin assignment of chunks; worst case first node gets
+            more data; last node gets least data
+        11) Variable-sized chunks allowed
+        12) No delete or rewrite
+
+
+TODO:
+       1) master should only write into Redis on receipt of write info from a
+          worker
+       2) concurrent writing to multiple nodes, reading from multi nodes
+          (readahead as well)---basically add threading with push/pull sockets 
