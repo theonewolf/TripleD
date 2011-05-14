@@ -20,6 +20,14 @@ Requirements:
         zeromq-2.1.7
         redis-2.2.7
 
+Usage:
+        master.py       -- run on metadata master node
+        worker.py       -- run on worker nodes
+
+        cptoddd.py      -- use to copy files into TripleD
+        cpfromddd.py    -- use to copy files out of TripleD
+        lsddd.py        -- use to list files in TripleD
+
 Design:
 
         1) Master handles all metadata
