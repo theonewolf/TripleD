@@ -9,7 +9,7 @@ CHUNK_DIR = '/tmp/tripled_chunks/'
 
 class master:
     def __init__(self):
-        self.redis = redis.Redis(host=REDIS_HOST, port=6379, db=0)
+        self.redis = redis.Redis(host=REDIS_SERVER, port=6379, db=0)
         self.workers = []
         self.count = 0
         self.written_blocks = 0
