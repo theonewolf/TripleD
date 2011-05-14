@@ -1,3 +1,20 @@
+Introduction:
+
+        This is a very simple distributed file system borrowing many ideas from
+        GFS.  The idea is to focus on simplicity and performance.  Not
+        availability or fault tolerance (at all).
+
+        Triple D:
+                1) Dead simple...
+                2) Done right...
+                3) Distributed file system
+
+Why:
+
+        Tired of bullshit configurations and degraded performance?
+        Want good performance?
+        How about usable and understandable code?
+
 Requirements:
 
         zeromq-2.1.7
