@@ -50,3 +50,7 @@ TODO:
           worker
        2) concurrent writing to multiple nodes, reading from multi nodes
           (readahead as well)---basically add threading with push/pull sockets 
+
+Legal:
+
+        TripleD is licensed under the MIT license.
