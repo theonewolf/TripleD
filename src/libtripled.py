@@ -1,6 +1,6 @@
 #!/bin/env python
 
-import logging, zmq, pickle
+import logging, zmq
 
 log = logging.getLogger('tripled.libtripled') 
 
@@ -31,30 +31,28 @@ class tripled:
         return worker 
 
     def read_file(self, path):
-        self.master.send(pickle.dumps(('read', path)))
-        blocks = pickle.loads(self.master.recv())
+        self.master.send(('read', path))
+        blocks = self.master.recv()
         log.debug('blocks: %s', blocks)
-        deserialized_blocks = [pickle.loads(block) for block in blocks]
-        log.debug('deserialized: %s', deserialized_blocks)
-        return deserialized_blocks 
+        return blocks
 
     def write_block(self, path, block, data):
-        self.master.send(pickle.dumps(('write', path, block)))
-        details = pickle.loads(self.master.recv())
+        self.master.send(('write', path, block))
+        details = self.master.recv()
         self.worker_write_block(details[0], details[1], data)
 
     def read_block(self, worker, path):
         worker = self.get_worker(worker)
-        worker.send(pickle.dumps(('read',path)))
-        return pickle.loads(worker.recv())
+        worker.send(('read',path))
+        return worker.recv()
 
     def worker_write_block(self, worker, path, data):
         log.debug('writing[%s] to worker[%s]' % (path, worker))
         worker = self.get_worker(worker)
         log.debug('got socket...writing data[%d]' % (len(data)))
-        worker.send(pickle.dumps(('write', path, data)))
+        worker.send(('write', path, data))
         log.debug('sent message...')
-        return pickle.loads(worker.recv())
+        return worker.recv()
 
 if __name__ == '__main__':
     print 'This is a library of client functions.'

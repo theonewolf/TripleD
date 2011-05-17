@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import logging, os, pickle, zmq
+import logging, os, zmq
 
 log = logging.getLogger('tripled.worker')
 
@@ -11,7 +11,7 @@ class worker:
     def client_read_block(self, client, path):
         log.info('worker reading block[%s]', path)
         with open(path, 'r') as f:
-                client.send(pickle.dumps(f.read()))
+                client.send(f.read())
 
     def client_write_block(self, client, command):
         log.info('worker writing block[%s]', command[1])
@@ -19,10 +19,9 @@ class worker:
         except OSError: pass
         with open(command[1], 'w') as f:
                 f.write(command[2])
-        client.send(pickle.dumps(True))
+        client.send(True)
 
     def parse_client_command(self, client, command):
-        command = pickle.loads(command)
         log.debug('command: %s' % (command[0:1]))
         if command[0] == 'read':
             self.client_read_block(client, command[1])

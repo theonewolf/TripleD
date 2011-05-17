@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import fileinput, hashlib, logging, pickle, os, sys, redis, zmq
+import fileinput, hashlib, logging, os, sys, redis, zmq
 
 # CONSTANTS
 log = logging.getLogger('tripled.master')
@@ -20,7 +20,7 @@ class master:
 
     def client_read_file(self, client, file):
         blocks = self.redis.lrange(file, 0, -1)
-        client.send(pickle.dumps(blocks))
+        client.send(blocks)
 
     def client_write(self, client, file, block):
         worker = self.workers[self.written_blocks % self.count]
@@ -28,12 +28,11 @@ class master:
         path = os.path.join(directory, str(block))
         log.debug('writing to worker[%s] path[%s]'% (worker, path))
         self.written_blocks += 1
-        serialized = pickle.dumps((worker, path))
+        serialized = (worker, path)
         self.redis.rpush(file, serialized)
         client.send(serialized)
 
     def parse_client_command(self, client, command):
-        command = pickle.loads(command)
         log.debug('command: %s', command)
         if command[0] == 'read':
             self.client_read_file(client, command[1])
