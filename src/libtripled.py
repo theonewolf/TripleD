@@ -31,26 +31,26 @@ class tripled:
         return worker 
 
     def read_file(self, path):
-        self.master.send(('read', path))
+        self.master.send_pyobj(('read', path), protocol=0)
         blocks = self.master.recv()
         log.debug('blocks: %s', blocks)
         return blocks
 
     def write_block(self, path, block, data):
-        self.master.send(('write', path, block))
+        self.master.send_pyobj(('write', path, block), protocol=0)
         details = self.master.recv()
         self.worker_write_block(details[0], details[1], data)
 
     def read_block(self, worker, path):
         worker = self.get_worker(worker)
-        worker.send(('read',path))
+        worker.send_pyobj(('read',path), protocol=0)
         return worker.recv()
 
     def worker_write_block(self, worker, path, data):
         log.debug('writing[%s] to worker[%s]' % (path, worker))
         worker = self.get_worker(worker)
         log.debug('got socket...writing data[%d]' % (len(data)))
-        worker.send(('write', path, data))
+        worker.send_pyobj(('write', path, data), protocol=0)
         log.debug('sent message...')
         return worker.recv()
 

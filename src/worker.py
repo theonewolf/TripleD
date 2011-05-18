@@ -11,7 +11,7 @@ class worker:
     def client_read_block(self, client, path):
         log.info('worker reading block[%s]', path)
         with open(path, 'r') as f:
-                client.send(f.read())
+                client.send_pyobj(f.read(), protocol=0)
 
     def client_write_block(self, client, command):
         log.info('worker writing block[%s]', command[1])
@@ -19,7 +19,7 @@ class worker:
         except OSError: pass
         with open(command[1], 'w') as f:
                 f.write(command[2])
-        client.send(True)
+        client.send_pyobj(True, protocol=0)
 
     def parse_client_command(self, client, command):
         log.debug('command: %s' % (command[0:1]))

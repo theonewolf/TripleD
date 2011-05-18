@@ -20,7 +20,7 @@ class master:
 
     def client_read_file(self, client, file):
         blocks = self.redis.lrange(file, 0, -1)
-        client.send(blocks)
+        client.send_pyobj(blocks, protocol=0)
 
     def client_write(self, client, file, block):
         worker = self.workers[self.written_blocks % self.count]
@@ -30,7 +30,7 @@ class master:
         self.written_blocks += 1
         serialized = (worker, path)
         self.redis.rpush(file, serialized)
-        client.send(serialized)
+        client.send_pyobj(serialized, protocol=0)
 
     def parse_client_command(self, client, command):
         log.debug('command: %s', command)
